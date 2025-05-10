@@ -30,14 +30,6 @@ p {
     margin: 10px 0;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 button {
     background-color: #4CAF50;
     color: white;
@@ -62,25 +54,9 @@ button:hover {
     gap: 10px;
     justify-items: center;
     align-items: center;
-    background-image: none;
-    background-color: #f0e68c; /* 明るい黄色 */
+    background-color: #f0e68c;
     padding: 20px;
     border-radius: 10px;
-}
-
-#payment-options label {
-    position: relative;
-    display: inline-block;
-}
-
-#payment-options input[type="checkbox"] {
-    display: none;
-}
-
-#payment-options input[type="checkbox"]:checked + img {
-    filter: brightness(0.7);
-    border: 2px solid #4CAF50;
-    border-radius: 5px;
 }
 
 #payment-options img {
@@ -90,19 +66,14 @@ button:hover {
     cursor: pointer;
 }
 
-.game-container button {
-    display: inline-block;
-    margin: 10px 5px;
-}
-
 .button-container {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
 
-#pay-button {
-    margin-right: 10px;
+.button-container button {
+    margin: 0 10px; /* Add horizontal spacing between buttons */
 }
 
 .coin {
@@ -111,6 +82,34 @@ button:hover {
 }
 
 .selected {
-    filter: brightness(0.5); /* Make the selected coin appear darker */
-    border: 2px solid blue; /* Optional: Add a border to highlight selection */
+    filter: brightness(0.5);
+    border: 2px solid rgb(0, 255, 136);
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.success {
+    background-color: #4CAF50;
+}
+
+.toast.error {
+    background-color: #f44336;
 }

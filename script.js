@@ -10,50 +10,35 @@ document.getElementById('pay-button').addEventListener('click', function() {
     const resultMessage = document.getElementById('result-message');
 
     if (totalPayment === 0) {
+        showToast('おかねをえらんで。', 'error'); // Show toast notification
         resultMessage.textContent = 'おかねをえらんで。';
         resultMessage.style.color = 'red';
         return;
     }
 
     if (totalPayment < itemPrice) {
+        showToast('おかねが足りないよ。', 'error');
         resultMessage.textContent = 'おかねが足りないよ。';
         resultMessage.style.color = 'red';
     } else if (totalPayment >= itemPrice) {
         const change = totalPayment - itemPrice;
-        const changeContainer = document.createElement('div');
-        changeContainer.id = 'change-container';
-        changeContainer.style.marginTop = '20px';
-        changeContainer.dataset.change = change; // 追加: おつりの金額をデータ属性に保存
+        paidCoins = Array.from(selectedCoins); // Record coins used for payment
 
-        if (change > 0) {
-            const coins = [500, 100, 50, 10, 5, 1];
-            let remainingChange = change;
-
-            for (const coin of coins) {
-                const count = Math.floor(remainingChange / coin);
-                if (count > 0) {
-                    for (let i = 0; i < count; i++) {
-                        const coinImage = document.createElement('img');
-                        coinImage.src = `images/money_${coin}.png`;
-                        coinImage.alt = `${coin}えん`;
-                        coinImage.classList.add('coin');
-                        changeContainer.appendChild(coinImage);
-                    }
-                    remainingChange %= coin;
-                }
-            }
-
-            resultMessage.textContent = `ビンゴ！おかいものせいこう！ おつりは ${change} えんです。`;
-        } else {
-            resultMessage.textContent = 'ビンゴ！おかいものせいこう！';
-        }
-
+        const changeContainer = displayChange(change);
         const gameContainer = document.querySelector('.game-container');
         const existingChangeContainer = document.getElementById('change-container');
         if (existingChangeContainer) {
             gameContainer.removeChild(existingChangeContainer);
         }
         gameContainer.appendChild(changeContainer);
+
+        if (change > 0) {
+            showToast(`ビンゴ！おかいものせいこう！ おつりは ${change} えんです。`, 'success');
+            resultMessage.textContent = `ビンゴ！おかいものせいこう！ おつりは ${change} えんです。`;
+        } else {
+            showToast('ビンゴ！おかいものせいこう！', 'success');
+            resultMessage.textContent = 'ビンゴ！おかいものせいこう！';
+        }
 
         resultMessage.style.color = 'green';
     }
@@ -84,24 +69,14 @@ function initializeWallet() {
 
 function addChangeToWallet(change) {
     const walletContainer = document.getElementById('payment-options');
-    const coins = [500, 100, 50, 10, 5, 1];
     let remainingChange = change;
 
-    for (const coin of coins) {
+    for (const coin of COIN_VALUES) {
         const count = Math.floor(remainingChange / coin);
         if (count > 0) {
             for (let i = 0; i < count; i++) {
-                // Create coin image
-                const coinImage = document.createElement('img');
-                coinImage.src = `images/money_${coin}.png`;
-                coinImage.alt = `${coin}えん`;
-                coinImage.classList.add('coin'); // Apply coin class
-                coinImage.dataset.value = coin; // Store coin value in dataset
-
-                // Apply click behavior
-                applyCoinClickBehavior(coinImage, walletContainer);
-
-                // Append image to wallet container
+                const coinImage = createCoinElement(coin);
+                applyCoinClickBehavior(coinImage);
                 walletContainer.appendChild(coinImage);
             }
             remainingChange %= coin;
@@ -111,16 +86,25 @@ function addChangeToWallet(change) {
 
 function removePaidCoins() {
     const walletContainer = document.getElementById('payment-options');
-    const selectedCoins = walletContainer.querySelectorAll('.coin.selected'); // Get all selected coins
 
-    selectedCoins.forEach(coin => {
-        walletContainer.removeChild(coin);
-        console.log(`Removed coin: ${coin.alt}`);
+    // Remove only coins that were used for payment
+    paidCoins.forEach(coin => {
+        if (walletContainer.contains(coin)) {
+            walletContainer.removeChild(coin);
+            console.log(`Removed coin: ${coin.alt}`);
+        }
     });
 
-    if (selectedCoins.length === 0) {
-        console.warn('No coins selected to remove.');
-    }
+    // Clear the record of paid coins after removal
+    paidCoins = [];
+
+    // Ensure that selected but unpaid coins remain selected
+    const remainingCoins = walletContainer.querySelectorAll('.coin');
+    remainingCoins.forEach(coin => {
+        if (coin.classList.contains('selected')) {
+            coin.classList.remove('selected'); // Deselect unpaid coins
+        }
+    });
 }
 
 function resetGame() {
@@ -163,3 +147,66 @@ window.addEventListener('load', resetGame);
 
 // Ensure wallet initialization on page load
 window.addEventListener('load', initializeWallet);
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`; // Add type class (success or error)
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Show the toast
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
+// Define constants for coin values
+const COIN_VALUES = [500, 100, 50, 10, 5, 1];
+
+// Utility function to create a coin element
+function createCoinElement(value) {
+    const coinImage = document.createElement('img');
+    coinImage.src = `images/money_${value}.png`;
+    coinImage.alt = `${value}えん`;
+    coinImage.classList.add('coin');
+    coinImage.dataset.value = value;
+    return coinImage;
+}
+
+// Utility function to calculate total payment from selected coins
+function calculateTotalPayment(selectedCoins) {
+    return Array.from(selectedCoins).reduce((total, coin) => total + parseInt(coin.dataset.value, 10), 0);
+}
+
+// Utility function to display change as coins
+function displayChange(change) {
+    const changeContainer = document.createElement('div');
+    changeContainer.id = 'change-container';
+    changeContainer.style.marginTop = '20px';
+    changeContainer.dataset.change = change;
+
+    let remainingChange = change;
+    for (const coin of COIN_VALUES) {
+        const count = Math.floor(remainingChange / coin);
+        if (count > 0) {
+            for (let i = 0; i < count; i++) {
+                const coinImage = createCoinElement(coin);
+                changeContainer.appendChild(coinImage);
+            }
+            remainingChange %= coin;
+        }
+    }
+
+    return changeContainer;
+}
+
+// Define a global variable to track paid coins
+let paidCoins = [];
