@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>おかいものゲーム</title>
+    <title>たのしいおかいものゲーム</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <h1>おかいものゲーム</h1>
-        <p>しょうひん: <span id="item-name">りんご</span></p>
-        <img src="images/fruit_apple.png" alt="りんご" id="item-image" style="width: 100px; height: auto;">
-        <p>ねだん: <span id="item-price">100</span>えん</p>
+        <div class="title-container">
+            <h1>たのしいおかいもの</h1>
+        </div>
+        <div class="item-container">
+            <p>しょうひん: <span id="item-name">りんご</span></p>
+            <img src="images/fruit_apple.png" alt="りんご" id="item-image" style="width: 100px; height: auto;">
+            <p>ねだん: <span id="item-price">100</span>えん</p>
+        </div>
         <p>さいふのなかみ:</p>
-        <div id="payment-options">
-            <img class="coin" src="images/money_1.png" alt="1えん" data-value="1">
-            <img class="coin" src="images/money_10.png" alt="10えん" data-value="10">
-            <img class="coin" src="images/money_50.png" alt="50えん" data-value="50">
-            <img class="coin" src="images/money_100.png" alt="100えん" data-value="100">
-            <img class="coin" src="images/money_500.png" alt="500えん" data-value="500">
-            <img class="coin" src="images/money_1000.png" alt="1000えん" data-value="1000">
+        <div id="payment-options" aria-label="さいふのなかみ" role="group">
+            <img class="coin" src="images/money_1.png" alt="1えん" data-value="1" tabindex="0">
+            <img class="coin" src="images/money_10.png" alt="10えん" data-value="10" tabindex="0">
+            <img class="coin" src="images/money_50.png" alt="50えん" data-value="50" tabindex="0">
+            <img class="coin" src="images/money_100.png" alt="100えん" data-value="100" tabindex="0">
+            <img class="coin" src="images/money_500.png" alt="500えん" data-value="500" tabindex="0">
+            <img class="coin" src="images/money_1000.png" alt="1000えん" data-value="1000" tabindex="0">
         </div>
         <div class="button-container">
-            <button id="pay-button">しはらう</button>
-            <button id="reset-button">もう1かい</button>
+            <button id="pay-button" aria-label="しはらうボタン">しはらう</button>
+            <button id="reset-button" aria-label="もう1かいボタン">もう1かい</button>
         </div>
         <p id="result-message"></p>
     </div>

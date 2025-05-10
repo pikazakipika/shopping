@@ -43,6 +43,11 @@ button:hover {
     background-color: #45a049;
 }
 
+button:disabled {
+    background-color: #cccccc; /* Gray color for disabled state */
+    cursor: not-allowed; /* Show not-allowed cursor */
+}
+
 #result-message {
     font-weight: bold;
     margin-top: 20px;
