@@ -178,6 +178,11 @@ if (!resetButton) {
 }
 resetButton.addEventListener('click', function() {
     document.getElementById('pay-button').disabled = false; // リセット時に「しはらう」ボタンを再度有効にします
+    // 既存の税込価格要素を削除
+    const existingTaxPriceElement = document.querySelector('.item-container p:nth-of-type(3)');
+    if (existingTaxPriceElement) {
+        existingTaxPriceElement.remove();
+    }
     resetGame();
 });
 
