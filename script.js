@@ -20,12 +20,16 @@ document.getElementById('pay-button').addEventListener('click', function() {
         return;
     }
 
-    if (totalPayment < itemPrice) {
+    // 税込価格を取得
+    const taxRate = 0.08; // 消費税率8%
+    const taxIncludedPrice = Math.round(itemPrice * (1 + taxRate));
+
+    if (totalPayment < taxIncludedPrice) {
         showToast('おかねがたりないよ。', 'error');
         resultMessage.textContent = 'おかねが足りないよ。';
         resultMessage.style.color = 'red';
-    } else if (totalPayment >= itemPrice) {
-        const change = totalPayment - itemPrice;
+    } else {
+        const change = totalPayment - taxIncludedPrice; // おつりは税込価格との差額
         paidCoins = Array.from(selectedCoins); // 支払いに使用されたコインを記録
 
         const changeContainer = displayChange(change);
@@ -144,7 +148,7 @@ function resetGame() {
     document.getElementById('result-message').textContent = '';
 
     // 税込価格を計算して表示
-    const taxRate = 0.08; // 消費税率10%
+    const taxRate = 0.08; // 消費税率8%
     const taxIncludedPrice = Math.round(randomItem.price * (1 + taxRate));
     // 税込価格のスタイルを調整
     const taxPriceElement = document.createElement('p');
