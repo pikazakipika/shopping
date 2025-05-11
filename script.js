@@ -143,6 +143,16 @@ function resetGame() {
     document.getElementById('item-image').src = randomItem.image;
     document.getElementById('result-message').textContent = '';
 
+    // 税込価格を計算して表示
+    const taxRate = 0.08; // 消費税率10%
+    const taxIncludedPrice = Math.round(randomItem.price * (1 + taxRate));
+    // 税込価格のスタイルを調整
+    const taxPriceElement = document.createElement('p');
+    taxPriceElement.textContent = `（ぜいこみ: ${taxIncludedPrice}えん）`;
+    taxPriceElement.style.fontSize = '0.8em'; // フォントサイズを少し小さく設定
+
+    document.querySelector('.item-container').appendChild(taxPriceElement);
+
     const changeContainer = document.getElementById('change-container');
     if (changeContainer) {
         const change = parseInt(changeContainer.dataset.change, 10);
